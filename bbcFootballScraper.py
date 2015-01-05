@@ -9,12 +9,15 @@ soupPage = bs4.BeautifulSoup(footballResults.text)
 matchDetails = soupPage.select('td.match-details')
 #scores = soupPage.select('span.score')
 for md in matchDetails:
-	print md.select('span.team-home')[0].getText().strip()
-	#print md
-	print md.find(title = 'Score').getText().strip()
-	print md.select('span.team-away')[0].getText().strip()
-	print '--------'
+        print md.select('span.team-home')[0].getText().strip()
+        #print md
+        if md.find(title = 'Score') != None:
+                print md.find(title = 'Score').getText().strip()
+        else:
+                print md.find(title = 'Postponed').getText().strip()
+        print md.select('span.team-away')[0].getText().strip()
+        print '--------'
 #scores = soupPage.find_all(title = 'Score')
 
 #for s in scores:
-#	print s.getText()
+#  print s.getText()
