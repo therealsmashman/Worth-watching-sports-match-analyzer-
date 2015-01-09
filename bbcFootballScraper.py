@@ -1,7 +1,39 @@
 import requests, bs4, codecs
 import urllib2
 
+def printMatchData(pageUrl, sectionSeperator, matchSeperator, scoreSeperator, homeSeperator, awaySeperator):
+        #footballResults = requests.get('http://www.bbc.com/sport/football/results')
+        pageToScrape = open(pageUrl).read()
+        #parse the html with beautiful soup
+        #soupPage = bs4.BeautifulSoup(footballResults.text)
+        soupPage = bs4.BeautifulSoup(pageToScrape)
+        ##get all of the match details
+        sectionDetails = soupPage.select(sectionSeperator)
+        #get each league table
+        for section in sectionDetails:
+                print "========"        
+                matchDetails = section.select(matchSeperator)
+                for md in matchDetails:
+                        score = md.select(scoreSeperator)[0].getText().encode('utf-8').strip().split('-')
+                        home = md.select(homeSeperator)[0].getText().strip()
+                        home += " : " +score[0]
+                        print home
+                        away = md.select(awaySeperator)[0].getText().strip() + " : "
+                        away += score[1]
+                        print away
+                        print '--------'
+        
+
+
+
 def rugby():
+        printMatchData("examplePages/sportRugby.html",
+                       'div.data-table',
+                       'tr.result',
+                       'td.vs',
+                       'td.home-team',
+                       'td.away-team')
+'''
         #footballResults = requests.get('http://www.bbc.com/sport/football/results')
         footballResults = open("examplePages/sportRugby.html").read()
         #print footballResults
@@ -34,8 +66,17 @@ def rugby():
                         away += score[1]
                         print away
                         print '--------'
+'''
                 
 def footBall():
+        printMatchData("examplePages/sportFootball.html",
+                       'table.table-stats',
+                       'td.match-details',
+                       'span.score',
+                       'span.team-home',
+                       'span.team-away')
+
+'''         
         #footballResults = requests.get('http://www.bbc.com/sport/football/results')
         footballResults = open("examplePages/sportFootball.html").read()
         #print footballResults
@@ -56,13 +97,16 @@ def footBall():
                 for md in matchDetails:
                         print md.select('span.team-home')[0].getText().strip()
                         #print md
-                        if md.find(title = 'Score') != None:
-                                print md.find(title = 'Score').getText().strip()
-                        else:
-                                print md.find(title = 'Postponed').getText().strip()
+                        #if md.find(title = 'Score') != None:
+                        #if len(md.select("span.score"))>0:
+                        print md.select("span.score")[0].getText().strip()
+                        #else:
+                        #        print md.find(title = 'Postponed').getText().strip()
                         print md.select('span.team-away')[0].getText().strip()
                         print '--------'
 
+'''        
+  
 
 print 'hello world'
-rugby()
+footBall()
