@@ -1,0 +1,7 @@
+watch match if:
+your team won
+there were more than x scores
+the score was within x scores
+user score of the game is greater than x
+if the pundits thought it was a good gmae
+if twitter thought it was a good game
