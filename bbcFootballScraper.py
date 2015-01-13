@@ -1,7 +1,8 @@
 import requests, bs4, codecs
 import urllib2
 
-def printMatchData(pageUrl, sectionSeperator, matchSeperator, scoreSeperator, homeSeperator, awaySeperator):
+def printMatchData(pageUrl, sectionSeperator, dateTitle ,leageTitle, leaguePos,
+			 matchSeperator, scoreSeperator, homeSeperator, awaySeperator):
         #footballResults = requests.get('http://www.bbc.com/sport/football/results')
         pageToScrape = open(pageUrl).read()
         #parse the html with beautiful soup
@@ -11,24 +12,28 @@ def printMatchData(pageUrl, sectionSeperator, matchSeperator, scoreSeperator, ho
         sectionDetails = soupPage.select(sectionSeperator)
         #get each league table
         for section in sectionDetails:
-                print "========"        
+                print "========"
+		if len(section.select(dateTitle))>0:
+			print section.select(dateTitle)[0].getText().strip()
+		if len(section.select(leageTitle))>leaguePos:
+			print section.select(leageTitle)[leaguePos].getText().strip()       
                 matchDetails = section.select(matchSeperator)
                 for md in matchDetails:
-                        score = md.select(scoreSeperator)[0].getText().encode('utf-8').strip().split('-')
+                        print '----------------'
+			score = md.select(scoreSeperator)[0].getText().encode('utf-8').strip().split('-')
                         home = md.select(homeSeperator)[0].getText().strip()
                         home += " : " +score[0]
                         print home
                         away = md.select(awaySeperator)[0].getText().strip() + " : "
                         away += score[1]
                         print away
-                        print '--------'
-        
-
-
 
 def rugby():
         printMatchData("examplePages/sportRugby.html",
                        'div.data-table',
+			'h2.table-header',
+			'p.table-description',
+                       0,
                        'tr.result',
                        'td.vs',
                        'td.home-team',
@@ -71,7 +76,10 @@ def rugby():
 def footBall():
         printMatchData("examplePages/sportFootball.html",
                        'table.table-stats',
-                       'td.match-details',
+                       'caption',
+			'th.competition-title',
+			1,
+			'td.match-details',
                        'span.score',
                        'span.team-home',
                        'span.team-away')
@@ -109,4 +117,5 @@ def footBall():
   
 
 print 'hello world'
-footBall()
+footBall();
+#rugby()
